@@ -1,24 +1,326 @@
-# AmhMedQA
+# Amharic Medical Question Answering System Using AmhBERT
 
-AmhMedQA is an Amharic medical question-answering dataset.
+## Overview
 
-## Dataset Description
+This repository contains the dataset and experimental resources for an **Amharic medical Question Answering (QA) system** based on a comparative evaluation of five transformer-based language models: **RoBERTa, BERT, XLM-R, mBERT, and AmhBERT**.
 
-The dataset contains 3000 Amharic medical question-answer pairs.
+The study focuses on Question Answering in **Amharic**, a relatively low-resource language in Natural Language Processing (NLP). The dataset contains **3,000 question–context–answer records** and is designed to support research on extractive Question Answering and the evaluation of transformer-based language models for Amharic.
 
-## Columns
+The main objective is to investigate how different pretrained and Amharic-adapted language models perform on Amharic medical QA and to provide a reproducible benchmark for future research.
 
-- Question
-- Context
-- Answer
+---
+
+## Dataset
+
+The dataset consists of **3,000 Amharic question–context–answer records**. Each record contains three fields:
+
+| Field      | Description                                                        |
+| ---------- | ------------------------------------------------------------------ |
+| `question` | An Amharic question formulated from the corresponding context      |
+| `context`  | An Amharic passage containing information relevant to the question |
+| `answer`   | The corresponding answer supported by the context                  |
+
+### Example
+
+```text
+Question:
+የደም ግፊት ምንድን ነው?
+
+Context:
+የደም ግፊት ደም በደም ሥሮች ውስጥ ሲዘዋወር በደም ሥር ግድግዳ ላይ የሚፈጥረው ግፊት ነው።
+
+Answer:
+ደም በደም ሥሮች ውስጥ ሲዘዋወር በደም ሥር ግድግዳ ላይ የሚፈጥረው ግፊት
+```
+
+The example above is illustrative. The repository dataset should be used for actual experiments.
+
+---
+
+## Models
+
+Five transformer-based language models are evaluated under the same experimental conditions.
+
+| Model       | Description                                                                                                                        |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **RoBERTa** | A robustly optimized variant of BERT designed to improve pretrained language representations through modified training strategies. |
+| **BERT**    | A bidirectional transformer language model that provides a standard pretrained baseline for NLP tasks.                             |
+| **XLM-R**   | A multilingual transformer model pretrained on large-scale multilingual CommonCrawl data and designed for cross-lingual NLP.       |
+| **mBERT**   | Multilingual BERT pretrained on Wikipedia text from multiple languages, including support for Amharic.                             |
+| **AmhBERT** | An Amharic-adapted BERT model developed to provide stronger language representations for Amharic NLP tasks.                        |
+
+The comparison includes both general-purpose and multilingual models, together with an Amharic-adapted model, allowing their effectiveness for Amharic medical QA to be evaluated under a common framework.
+
+---
+
+## Experimental Approach
+
+Each model is independently fine-tuned on the same Amharic QA dataset.
+
+The general extractive QA architecture is:
+
+```text
+Question + Context
+        |
+        v
+Transformer Language Model
+(RoBERTa / BERT / XLM-R / mBERT / AmhBERT)
+        |
+        v
+Question Answering Head
+        |
+        v
+Start Position + End Position
+        |
+        v
+Predicted Answer
+```
+
+For each model, the question and context are provided as the input sequence. The Question Answering head predicts the start and end positions of the answer within the context.
+
+---
+
+## Data Preparation
+
+The preprocessing pipeline includes:
+
+1. Loading the Amharic QA dataset.
+2. Checking for missing or invalid records.
+3. Removing duplicate records where necessary.
+4. Cleaning the question, context, and answer fields.
+5. Applying appropriate Unicode normalization.
+6. Tokenizing question–context pairs using the tokenizer associated with each model.
+7. Mapping answer positions to token-level start and end positions.
+8. Separating the dataset into training, validation, and test sets.
+
+The same general preprocessing and evaluation protocol is applied to all models to ensure a fair comparison.
+
+---
+
+## Dataset Split
+
+The **3,000 records** are divided into training, validation, and test sets.
+
+| Split      |   Records | Percentage |
+| ---------- | --------: | ---------: |
+| Training   |     2,400 |        80% |
+| Validation |       300 |        10% |
+| Test       |       300 |        10% |
+| **Total**  | **3,000** |   **100%** |
+
+The test set remains completely separate from training and model selection and is used only for final evaluation.
+
+Where multiple QA pairs originate from the same source document or context, they should remain within the same dataset partition to reduce the risk of data leakage.
+
+---
+
+## Evaluation Metrics
+
+The models are evaluated using standard extractive Question Answering metrics.
+
+### Exact Match (EM)
+
+Exact Match measures the proportion of predictions that exactly match the reference answer after applying the evaluation normalization procedure.
+
+```text
+EM = 1, if predicted answer = reference answer
+     0, otherwise
+```
+
+The final EM score is calculated as the average across the test examples.
+
+### F1 Score
+
+Token-level F1 measures the overlap between the predicted answer and the reference answer.
+
+```text
+Precision = overlapping tokens / predicted tokens
+
+Recall = overlapping tokens / reference tokens
+
+F1 = 2 × Precision × Recall / (Precision + Recall)
+```
+
+F1 provides a more flexible measure than Exact Match because partial overlap between the predicted and reference answers is also considered.
+
+---
+
+## Experimental Comparison
+
+The main research question is:
+
+> **How effectively can pretrained, multilingual, and Amharic-adapted transformer models perform Question Answering in Amharic?**
+
+RoBERTa, BERT, XLM-R, mBERT, and AmhBERT are evaluated using the same dataset, preprocessing procedure, data partitions, and evaluation metrics.
+
+The comparison is intended to examine the relative contribution of multilingual pretraining and Amharic-specific adaptation to medical Question Answering.
+
+---
+
+## Repository Structure
+
+```text
+.
+├── data/
+│   └── amharic_qa.csv
+│
+├── preprocessing/
+│   └── preprocess.py
+│
+├── models/
+│   ├── roberta.py
+│   ├── bert.py
+│   ├── xlm_roberta.py
+│   ├── mbert.py
+│   └── amhbert.py
+│
+├── training/
+│   └── train.py
+│
+├── evaluation/
+│   └── evaluate.py
+│
+├── results/
+│   ├── roberta/
+│   ├── bert/
+│   ├── xlm-r/
+│   ├── mbert/
+│   └── amhbert/
+│
+├── requirements.txt
+└── README.md
+```
+Install the dependencies using:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Running the Experiments
+
+### 1. Clone the repository
+
+```bash
+git clone YOUR_REPOSITORY_URL
+cd YOUR_REPOSITORY_NAME
+```
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Prepare the dataset
+
+Place the dataset at:
+
+```text
+data/amharic_qa.csv
+```
+
+The CSV file should contain:
+
+```text
+question,context,answer
+```
+
+### 4. Preprocess the data
+
+```bash
+python preprocessing/preprocess.py
+```
+
+### 5. Fine-tune a model
+
+### 6. Evaluate the models
 
 
-## Dataset Access
+The evaluation script reports **Exact Match (EM)** and **F1** scores on the held-out test set.
 
-The dataset is provided for research purposes.
+---
+
+## Reproducibility
+
+To support reproducible research, the experiments should use:
+
+* The same dataset split for all models.
+* The same preprocessing procedure.
+* The same evaluation metrics.
+* Fixed random seeds.
+* Clearly specified hyperparameters.
+* A separate validation set for model selection.
+* A held-out test set for final evaluation.
+
+Model-specific configurations and experimental results should be documented in the repository.
+
+---
+
+## Intended Use
+
+The dataset and experimental resources are intended for:
+
+* Amharic Natural Language Processing research.
+* Medical Question Answering research.
+* Transformer-based language model evaluation.
+* Low-resource and African-language NLP research.
+* Development of Amharic QA systems.
+* Educational and academic research.
+
+The dataset is intended for research and educational purposes and should not be considered a substitute for professional medical advice or direct clinical decision-making.
+
+---
+
+## Limitations
+
+Amharic is a relatively low-resource language compared with languages such as English, and high-quality annotated medical QA resources remain limited.
+
+The dataset contains **3,000 records** and may not cover all linguistic variations, medical domains, writing styles, or question formulations found in real-world Amharic text.
+
+Performance differences among RoBERTa, BERT, XLM-R, mBERT, and AmhBERT may also be influenced by differences in pretraining data, tokenizer vocabulary, model architecture, and the quality of Amharic representations.
+
+---
 
 ## Citation
 
-If you use this dataset, please cite:
+If you use this dataset, code, or experimental results in your research, please cite the associated publication:
 
-Bogale, B. (2026). AmhMedQA: Amharic medical question answering dataset [Dataset]. GitHub. https://github.com/Berhanu948/AmMedQA
+```bibtex
+@article{YOUR_CITATION_KEY,
+  title   = {Amharic Question Answering Using Transformer Language Models},
+  author  = {Author Name},
+  journal = {Journal Name},
+  year    = {2026}
+}
+```
+
+Replace the placeholder information with the final publication details.
+
+---
+
+## Acknowledgments
+
+We acknowledge the researchers and developers who have contributed multilingual pretrained language models and NLP resources that support research in African and other low-resource languages.
+
+---
+
+## License
+
+The applicable licenses should be clearly specified for the dataset and source code.
+
+For example:
+
+```text
+Dataset: CC BY 4.0
+Code: MIT License
+```
+
+If different components have different licenses, the corresponding license should be clearly identified.
+
+---
+
+## Contact
+
+For questions, suggestions, or collaboration, please open an issue in this repository or contact the corresponding author through the contact information provided in the associated publication.
