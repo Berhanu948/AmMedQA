@@ -47,7 +47,7 @@ Five transformer-based language models are evaluated under the same experimental
 | **BERT**    | A bidirectional transformer language model that provides a standard pretrained baseline for NLP tasks.                             |
 | **XLM-R**   | A multilingual transformer model pretrained on large-scale multilingual CommonCrawl data and designed for cross-lingual NLP.       |
 | **mBERT**   | Multilingual BERT pretrained on Wikipedia text from multiple languages, including support for Amharic.                             |
-| **AmhBERT** | An Amharic-adapted BERT model developed to provide stronger language representations for Amharic NLP tasks.                        |
+| **AmhBERT** | An Amharic-adapted mBERT model developed to provide stronger language representations for Amharic NLP tasks.                        |
 
 The comparison includes both general-purpose and multilingual models, together with an Amharic-adapted model, allowing their effectiveness for Amharic medical QA to be evaluated under a common framework.
 
