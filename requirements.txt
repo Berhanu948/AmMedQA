@@ -1,0 +1,15 @@
+---
+
+## Requirements
+
+The experiments require Python and the following major libraries:
+
+```text
+torch
+transformers
+datasets
+tokenizers
+scikit-learn
+pandas
+numpy
+```
