@@ -283,22 +283,8 @@ Performance differences among RoBERTa, BERT, XLM-R, mBERT, and AmhBERT may also 
 
 ---
 
-## Citation
 
-If you use this dataset, code, or experimental results in your research, please cite the associated publication:
 
-```bibtex
-@article{YOUR_CITATION_KEY,
-  title   = {Amharic Question Answering Using Transformer Language Models},
-  author  = {Author Name},
-  journal = {Journal Name},
-  year    = {2026}
-}
-```
-
-Replace the placeholder information with the final publication details.
-
----
 
 ## Acknowledgments
 
